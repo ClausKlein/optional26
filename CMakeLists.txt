@@ -2,15 +2,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.27...3.31)
 
 project(beman_optional26 VERSION 0.0.0 LANGUAGES CXX)
 
 # Includes
-include(CTest)
+include(CPACK)
 include(FetchContent)
 
-set(TARGETS_EXPORT_NAME ${CMAKE_PROJECT_NAME}Targets)
+set(TARGET_PACKAGE_NAME ${PROJECT_NAME})
+set(TARGETS_EXPORT_NAME ${TARGET_PACKAGE_NAME}-targets)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET_PACKAGE_NAME})
 
 option(
     OPTIONAL26_ENABLE_TESTING
@@ -20,6 +22,8 @@ option(
 
 # Build the tests if enabled via the option OPTIONAL26_ENABLE_TESTING
 if(OPTIONAL26_ENABLE_TESTING)
+    enable_testing()
+
     # Fetch GoogleTest
     FetchContent_Declare(
         googletest
@@ -35,6 +39,7 @@ set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ON)
 
 # Create the library target and named header set for beman_optional26
 add_library(beman_optional26 INTERFACE)
+add_library(Beman::Optional26::beman_optional26 ALIAS beman_optional26)
 target_sources(
     beman_optional26
     PUBLIC FILE_SET beman_optional26_headers TYPE HEADERS BASE_DIRS include
@@ -61,22 +66,42 @@ add_subdirectory(examples)
 
 include(CMakePackageConfigHelpers)
 
-# This will be used to replace @PACKAGE_cmakeModulesDir@
-set(cmakeModulesDir cmake/beman)
+# install
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config-version.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
 configure_package_config_file(
     cmake/Config.cmake.in
-    BemanOptional26Config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/beman/optional26/
-    PATH_VARS cmakeModulesDir
-    NO_SET_AND_CHECK_MACRO
-    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+    ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
 )
 
 install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/BemanOptional26Config.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/beman/optional26/
-    COMPONENT beman_optional26_development
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config-version.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
 )
+
+# # This will be used to replace @PACKAGE_cmakeModulesDir@
+# set(cmakeModulesDir cmake)
+# configure_package_config_file(
+#     cmake/Config.cmake.in
+#     beman_optional26-config.cmake
+#     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/beman_optional26/
+#     PATH_VARS cmakeModulesDir
+#     NO_SET_AND_CHECK_MACRO
+#     NO_CHECK_REQUIRED_COMPONENTS_MACRO
+# )
+#
+# install(
+#     FILES ${CMAKE_CURRENT_BINARY_DIR}/beman_optional26-config.cmake
+#     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/beman_optional26/
+#     COMPONENT beman_optional26_development
+# )
 
 # Coverage
 configure_file("cmake/gcovr.cfg.in" gcovr.cfg @ONLY)
