@@ -4,6 +4,10 @@
 
 cmake_minimum_required(VERSION 3.27...3.31)
 
+# set a default CXX standard for the tools and targets that do not specify them.
+# If commented, the latest supported standard for your compiler is automatically set.
+# set(CMAKE_CXX_STANDARD 20)
+
 project(beman_optional26 VERSION 0.0.0 LANGUAGES CXX)
 
 # Includes
@@ -43,6 +47,12 @@ add_library(Beman::Optional26::beman_optional26 ALIAS beman_optional26)
 target_sources(
     beman_optional26
     PUBLIC FILE_SET beman_optional26_headers TYPE HEADERS BASE_DIRS include
+)
+target_compile_features(
+    beman_optional26
+    INTERFACE
+        "$<$<COMPILE_FEATURES:cxx_std_26>:cxx_std_26>"
+        "$<$<NOT:$<COMPILE_FEATURES:cxx_std_26>>:cxx_std_23>"
 )
 
 if(OPTIONAL26_ENABLE_TESTING)
