@@ -45,6 +45,6 @@ foreach(example ${EXAMPLES})
                 ${CMAKE_INSTALL_BINDIR}
         )
     else()
-        add_test(${example} name COMMAND ${example})
+        add_test(NAME ${example} COMMAND ${example})
     endif()
 endforeach()

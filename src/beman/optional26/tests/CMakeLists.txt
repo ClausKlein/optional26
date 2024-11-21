@@ -64,7 +64,8 @@ set_tests_properties(constructor_fails PROPERTIES WILL_FAIL true)
 # "Assert true")
 
 # test if the targets are findable from the build directory
-# NOTE: for an INTERFACE library, we may always use the -C Debug! CK
+# NOTE: For an INTERFACE library and multi config generators,
+# we always use the -C Debug config type to prevent problems! CK
 add_test(
     NAME find-package-test
     COMMAND
