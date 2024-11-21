@@ -7,13 +7,12 @@ cmake_minimum_required(VERSION 3.27...3.31)
 
 project(beman_optional26_example VERSION 0.0.0 LANGUAGES CXX)
 
-set(BEMAN_OPTIONAL26_LIBRARY "Beman::Optional26::beman_optional26")
-
 if(PROJECT_IS_TOP_LEVEL)
     find_package(beman_optional26 0.0.0 EXACT REQUIRED)
+    enable_testing()
+else()
+    include(GNUInstallDirs)
 endif()
-
-include(GNUInstallDirs)
 
 # List of all buildable examples.
 set(EXAMPLES
@@ -33,7 +32,7 @@ foreach(example ${EXAMPLES})
     target_sources(${example} PRIVATE ${example}.cpp)
 
     # Link example with the library.
-    target_link_libraries(${example} "${BEMAN_OPTIONAL26_LIBRARY}")
+    target_link_libraries(${example} Beman::Optional26::beman_optional26)
 
     if(NOT PROJECT_IS_TOP_LEVEL)
         # Install .
@@ -45,5 +44,7 @@ foreach(example ${EXAMPLES})
                 DESTINATION
                 ${CMAKE_INSTALL_BINDIR}
         )
+    else()
+        add_test(${example} name COMMAND ${example})
     endif()
 endforeach()

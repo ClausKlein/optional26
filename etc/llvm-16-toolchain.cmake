@@ -2,10 +2,10 @@ include_guard(GLOBAL)
 
 set(CMAKE_C_COMPILER clang-16)
 set(CMAKE_CXX_COMPILER clang++-16)
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS
-    "-std=c++20 \
-   -Wall -Wextra \
+    "-Wall -Wextra \
    -stdlib=libc++ -fexperimental-library"
     CACHE STRING
     "CXX_FLAGS"

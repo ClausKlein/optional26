@@ -2,10 +2,10 @@ include_guard(GLOBAL)
 
 set(CMAKE_C_COMPILER clang-14)
 set(CMAKE_CXX_COMPILER clang++-14)
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS
-    "-std=c++20 \
-   -Wall -Wextra \
+    "-Wall -Wextra \
    -stdlib=libstdc++ "
     CACHE STRING
     "CXX_FLAGS"
@@ -36,9 +36,18 @@ set(CMAKE_CXX_FLAGS_TSAN
     "C++ TSAN Flags"
     FORCE
 )
-set(CMAKE_CXX_FLAGS_ASAN
-    "-O3 -g -DNDEBUG -fsanitize=address -fsanitize=undefined -fsanitize=leak"
-    CACHE STRING
-    "C++ ASAN Flags"
-    FORCE
-)
+if(APPLE)
+    set(CMAKE_CXX_FLAGS_ASAN
+        "-O3 -g -DNDEBUG -fsanitize=address -fsanitize=undefined"
+        CACHE STRING
+        "C++ ASAN Flags"
+        FORCE
+    )
+else()
+    set(CMAKE_CXX_FLAGS_ASAN
+        "-O3 -g -DNDEBUG -fsanitize=address -fsanitize=undefined -fsanitize=leak"
+        CACHE STRING
+        "C++ ASAN Flags"
+        FORCE
+    )
+endif()

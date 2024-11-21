@@ -2,10 +2,10 @@ set(LLVM_ROOT "$ENV{LLVM_ROOT}" CACHE PATH "Path to LLVM installation")
 
 set(CMAKE_C_COMPILER ${LLVM_ROOT}/bin/clang)
 set(CMAKE_CXX_COMPILER ${LLVM_ROOT}/bin/clang++)
+set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_CXX_FLAGS
-    "-std=c++2a \
-   -Wall -Wextra \
+    "-Wall -Wextra \
    -stdlib=libc++ "
     CACHE STRING
     "CXX_FLAGS"
