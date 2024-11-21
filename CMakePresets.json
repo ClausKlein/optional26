@@ -2,7 +2,7 @@
   "version": 6,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 29,
+    "minor": 27,
     "patch": 2
   },
   "configurePresets": [
@@ -14,7 +14,21 @@
       "binaryDir": "${sourceDir}/.build/${presetName}",
       "installDir": "${sourceDir}/.install/${presetName}",
       "cacheVariables": {
-        "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Tsan;Asan"
+        "CMAKE_PREFIX_PATH": {
+          "type": "path",
+          "value": "${sourceDir}/.install/${presetName}"
+        },
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Tsan;Asan",
+        "CMAKE_CXX_EXTENSIONS": false,
+        "CMAKE_CXX_STANDARD": "20",
+        "CMAKE_CXX_STANDARD_REQUIRED": true,
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_SKIP_TEST_ALL_DEPENDENCY": false
+      },
+      "warnings": {
+        "uninitialized": false,
+        "deprecated": true
       }
     },
     {
@@ -85,7 +99,12 @@
     {
       "name": "common",
       "hidden": true,
-      "configuration": "Asan"
+      "configuration": "Debug",
+      "targets": [
+        "all_verify_interface_header_sets",
+        "all",
+        "install"
+      ]
     },
     {
       "name": "system",
@@ -137,7 +156,7 @@
     {
       "name": "common",
       "hidden": true,
-      "configuration": "Asan",
+      "configuration": "Debug",
       "output": {
         "outputOnFailure": true
       },

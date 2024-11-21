@@ -2,15 +2,24 @@
 #
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.27...3.31)
+
+# set a default CXX standard for the tools and targets that do not specify them.
+# If commented, the latest supported standard for your compiler is automatically set.
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 20)
+endif()
 
 project(beman_optional26 VERSION 0.0.0 LANGUAGES CXX)
 
 # Includes
-include(CTest)
-include(FetchContent)
+include(CPack)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
-set(TARGETS_EXPORT_NAME ${CMAKE_PROJECT_NAME}Targets)
+set(TARGET_PACKAGE_NAME ${PROJECT_NAME})
+set(TARGETS_EXPORT_NAME ${TARGET_PACKAGE_NAME}-targets)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET_PACKAGE_NAME})
 
 option(
     OPTIONAL26_ENABLE_TESTING
@@ -20,6 +29,10 @@ option(
 
 # Build the tests if enabled via the option OPTIONAL26_ENABLE_TESTING
 if(OPTIONAL26_ENABLE_TESTING)
+    enable_testing()
+
+    include(FetchContent)
+
     # Fetch GoogleTest
     FetchContent_Declare(
         googletest
@@ -31,11 +44,20 @@ if(OPTIONAL26_ENABLE_TESTING)
     FetchContent_MakeAvailable(googletest)
 endif()
 
+set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ON)
+
 # Create the library target and named header set for beman_optional26
-add_library(beman_optional26 STATIC)
+add_library(beman_optional26 INTERFACE)
+add_library(Beman::Optional26::beman_optional26 ALIAS beman_optional26)
 target_sources(
     beman_optional26
-    PUBLIC FILE_SET beman_optional26_headers TYPE HEADERS BASE_DIRS src include
+    PUBLIC FILE_SET beman_optional26_headers TYPE HEADERS BASE_DIRS include
+)
+target_compile_features(
+    beman_optional26
+    INTERFACE
+        "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>"
+        "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
 )
 
 if(OPTIONAL26_ENABLE_TESTING)
@@ -49,12 +71,33 @@ if(OPTIONAL26_ENABLE_TESTING)
             TYPE HEADERS
             BASE_DIRS src
     )
+
+    add_subdirectory(src/beman/optional26/tests)
 endif()
 
-add_subdirectory(src/beman/optional26)
 add_subdirectory(include/beman/optional26)
 
 add_subdirectory(examples)
+
+# install
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config-version.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(
+    cmake/Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config-version.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
 
 # Coverage
 configure_file("cmake/gcovr.cfg.in" gcovr.cfg @ONLY)
