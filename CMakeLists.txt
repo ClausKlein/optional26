@@ -6,13 +6,16 @@ cmake_minimum_required(VERSION 3.27...3.31)
 
 # set a default CXX standard for the tools and targets that do not specify them.
 # If commented, the latest supported standard for your compiler is automatically set.
-# set(CMAKE_CXX_STANDARD 20)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 20)
+endif()
 
 project(beman_optional26 VERSION 0.0.0 LANGUAGES CXX)
 
 # Includes
-include(CPACK)
-include(FetchContent)
+include(CPack)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 set(TARGET_PACKAGE_NAME ${PROJECT_NAME})
 set(TARGETS_EXPORT_NAME ${TARGET_PACKAGE_NAME}-targets)
@@ -27,6 +30,8 @@ option(
 # Build the tests if enabled via the option OPTIONAL26_ENABLE_TESTING
 if(OPTIONAL26_ENABLE_TESTING)
     enable_testing()
+
+    include(FetchContent)
 
     # Fetch GoogleTest
     FetchContent_Declare(
@@ -51,8 +56,8 @@ target_sources(
 target_compile_features(
     beman_optional26
     INTERFACE
-        "$<$<COMPILE_FEATURES:cxx_std_26>:cxx_std_26>"
-        "$<$<NOT:$<COMPILE_FEATURES:cxx_std_26>>:cxx_std_23>"
+        "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>"
+        "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
 )
 
 if(OPTIONAL26_ENABLE_TESTING)
@@ -74,8 +79,6 @@ add_subdirectory(include/beman/optional26)
 
 add_subdirectory(examples)
 
-include(CMakePackageConfigHelpers)
-
 # install
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config-version.cmake
@@ -95,23 +98,6 @@ install(
         ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_PACKAGE_NAME}-config-version.cmake
     DESTINATION ${INSTALL_CONFIGDIR}
 )
-
-# # This will be used to replace @PACKAGE_cmakeModulesDir@
-# set(cmakeModulesDir cmake)
-# configure_package_config_file(
-#     cmake/Config.cmake.in
-#     beman_optional26-config.cmake
-#     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/beman_optional26/
-#     PATH_VARS cmakeModulesDir
-#     NO_SET_AND_CHECK_MACRO
-#     NO_CHECK_REQUIRED_COMPONENTS_MACRO
-# )
-#
-# install(
-#     FILES ${CMAKE_CURRENT_BINARY_DIR}/beman_optional26-config.cmake
-#     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/beman_optional26/
-#     COMPONENT beman_optional26_development
-# )
 
 # Coverage
 configure_file("cmake/gcovr.cfg.in" gcovr.cfg @ONLY)
