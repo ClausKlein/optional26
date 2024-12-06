@@ -3,9 +3,16 @@
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 # cmake-format: on
 
-set(BEMAN_OPTIONAL26_LIBRARY "beman_optional26")
+cmake_minimum_required(VERSION 3.27...3.31)
 
-include(GNUInstallDirs)
+project(beman_optional26_example VERSION 0.0.0 LANGUAGES CXX)
+
+if(PROJECT_IS_TOP_LEVEL)
+    find_package(beman_optional26 0.0.0 EXACT REQUIRED)
+    enable_testing()
+else()
+    include(GNUInstallDirs)
+endif()
 
 # List of all buildable examples.
 set(EXAMPLES
@@ -25,15 +32,19 @@ foreach(example ${EXAMPLES})
     target_sources(${example} PRIVATE ${example}.cpp)
 
     # Link example with the library.
-    target_link_libraries(${example} "${BEMAN_OPTIONAL26_LIBRARY}")
+    target_link_libraries(${example} Beman::Optional26::beman_optional26)
 
-    # Install .
-    install(
-        TARGETS
-            ${example}
-            COMPONENT
-            beman_optional26_examples
-            DESTINATION
-            ${CMAKE_INSTALL_BINDIR}
-    )
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        # Install .
+        install(
+            TARGETS
+                ${example}
+                COMPONENT
+                beman_optional26_examples
+                DESTINATION
+                ${CMAKE_INSTALL_BINDIR}
+        )
+    else()
+        add_test(NAME ${example} COMMAND ${example})
+    endif()
 endforeach()
