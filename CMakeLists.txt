@@ -45,6 +45,7 @@ set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ON)
 
 # Create the library target and named header set for beman_optional26
 add_library(beman_optional26 INTERFACE)
+add_library(beman_optional26::beman_optional26 ALIAS beman_optional26)
 target_sources(
     beman_optional26
     PUBLIC FILE_SET beman_optional26_headers TYPE HEADERS BASE_DIRS include
