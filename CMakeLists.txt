@@ -1,15 +1,13 @@
 # CMakeLists.txt                                                    -*-CMake-*-
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-cmake_minimum_required(VERSION 3.27...4.3)
+cmake_minimum_required(VERSION 3.27...4.4)
 
 project(beman.optional VERSION 1.0.0 LANGUAGES CXX)
 
 # Includes
-include(CTest)
+# TODO(CK): not needed? include(CTest)
 include(FetchContent)
-
-set(TARGETS_EXPORT_NAME ${PROJECT_NAME}Targets)
 
 option(
     OPTIONAL_ENABLE_TESTING
@@ -17,7 +15,7 @@ option(
     ${PROJECT_IS_TOP_LEVEL}
 )
 
-set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ON)
+set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 
 # Create the library target and named header set for beman.optional
 add_library(beman.optional INTERFACE)
@@ -40,6 +38,7 @@ if(OPTIONAL_ENABLE_TESTING)
                     BASE_DIRS tests
         )
         # Tests
+        enable_testing()
         add_subdirectory(tests/beman/optional)
         include(GoogleTest)
         gtest_discover_tests(beman.optional.test)
