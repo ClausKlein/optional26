@@ -15,11 +15,11 @@ namespace std17 {
 // Using raw pointers to represent optional references.
 // Note: Using smart pointers would also be a choice, but it involves ownership semantics.
 
-Cat* find_cat(std::string) { return nullptr; }
+static Cat* find_cat(const std::string& /*unused*/) { return nullptr; }
 
-Cat* do_it(Cat& cat) { return &cat; }
+static Cat* do_it(Cat& cat) { return &cat; }
 
-Cat* api() {
+static Cat* api() {
     Cat* cat = find_cat("Fido");
     if (cat != nullptr) {
         return do_it(*cat);
@@ -33,21 +33,21 @@ namespace std26 {
 // After C++26 with P2988R5, the code would look like this.
 // Using directly optional to represent optional references.
 
-beman::optional::optional<Cat&> find_cat(std::string) { return {}; }
+static beman::optional::optional<Cat&> find_cat(const std::string& /*unused*/) { return {}; }
 
-beman::optional::optional<Cat&> do_it(Cat& cat) { return {cat}; }
+static beman::optional::optional<Cat&> do_it(Cat& cat) { return {cat}; }
 
-beman::optional::optional<Cat&> api() {
-    beman::optional::optional<Cat&> cat = find_cat("Fido");
+static beman::optional::optional<Cat&> api() {
+    const beman::optional::optional<Cat&> cat = find_cat("Fido");
     return cat.and_then(do_it);
 }
 
 } // namespace std26
 
-int example() {
+static int example() {
     // Example from P2988R5: optional reference.
-    [[maybe_unused]] Cat*                            old_cat = std17::api();
-    [[maybe_unused]] beman::optional::optional<Cat&> new_cat = std26::api();
+    [[maybe_unused]] const Cat*                            old_cat = std17::api();
+    [[maybe_unused]] const beman::optional::optional<Cat&> new_cat = std26::api();
 
     return 0;
 }

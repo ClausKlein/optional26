@@ -22,7 +22,7 @@ foreach(example ${EXAMPLES})
     target_sources(${example} PRIVATE ${example}.cpp)
 
     # Link example with the library.
-    target_link_libraries(${example} PRIVATE beman.optional)
+    target_link_libraries(${example} PRIVATE beman::optional)
 
     # Install .
     install(

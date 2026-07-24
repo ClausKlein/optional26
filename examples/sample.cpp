@@ -5,7 +5,7 @@
 #include <iostream>
 
 int main() {
-    beman::optional::optional<int> empty_opt{};
+    const beman::optional::optional<int> empty_opt{};
     if (!empty_opt) {
         std::cout << "empty_opt is empty!\n";
     }

@@ -13,20 +13,21 @@ namespace test {
 struct empty {};
 
 // No default constructor class helper.
+// NOLINTNEXTLINE(hicpp-special-member-functions)
 struct no_default_ctor {
     no_default_ctor()                                  = delete;
     no_default_ctor(const no_default_ctor&)            = default;
     no_default_ctor(no_default_ctor&&)                 = default;
     no_default_ctor& operator=(const no_default_ctor&) = default;
     no_default_ctor& operator=(no_default_ctor&&)      = default;
-    no_default_ctor(empty) {};
+    explicit no_default_ctor(empty /*unused*/) {};
 };
 
 // Base class helper.
 struct base {
     int m_i;
     base() : m_i(0) {}
-    base(int i) : m_i(i) {}
+    explicit base(int i) : m_i(i) {}
 };
 
 // Derived class helper.
