@@ -23,6 +23,7 @@ target_sources(
     beman.optional
     PUBLIC FILE_SET beman_optional_headers TYPE HEADERS BASE_DIRS include
 )
+add_library(beman::optional ALIAS beman.optional)
 
 if(OPTIONAL_ENABLE_TESTING)
     find_package(GTest QUIET)

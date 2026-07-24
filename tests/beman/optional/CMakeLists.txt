@@ -27,7 +27,7 @@ target_link_libraries(
 
 add_library(constructor_fails test_constructor_fail.cpp)
 
-target_link_libraries(constructor_fails PRIVATE beman.optional)
+target_link_libraries(constructor_fails PRIVATE beman::optional)
 
 set_target_properties(
     constructor_fails

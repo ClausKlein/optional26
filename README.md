@@ -306,6 +306,18 @@ This will generate the following directory structure at `/opt/beman`.
             └── beman.optional-targets.cmake
 ```
 
+#### Test Project against installed `beman.optional`
+
+To test from the root of the source tree
+
+```sh
+cmake --workflow --preset gcc-release
+cmake --install build/gcc-release --prefix .install --component optional_Development
+cmake -E rm -rf build
+cmake -S installtest -B build
+cmake --build  build --target test
+```
+
 ## Papers
 
 Latest revision(s) of the papers can be built / found at:

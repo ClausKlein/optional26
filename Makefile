@@ -11,7 +11,7 @@ MAKEFLAGS+= --warn-undefined-variables  # Warn when an undefined variable is ref
 
 
 INSTALL_PREFIX?=.install/
-BUILD_DIR?=.build
+BUILD_DIR?=build
 DEST?=$(INSTALL_PREFIX)
 
 TARGETS := test clean all ctest
