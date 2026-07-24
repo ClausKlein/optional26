@@ -6,13 +6,13 @@
 .SUFFIXES:
 
 MAKEFLAGS+= --no-builtin-rules  # Disable the built-in implicit rules.
+MAKEFLAGS+= --no-builtin-variables      # Disable the built-in variable settings.
 MAKEFLAGS+= --warn-undefined-variables  # Warn when an undefined variable is referenced.
 
 
 INSTALL_PREFIX?=.install/
 BUILD_DIR?=.build
 DEST?=$(INSTALL_PREFIX)
-CMAKE_FLAGS?=
 
 TARGETS := test clean all ctest
 
@@ -51,8 +51,7 @@ define run_cmake =
 	-DCMAKE_CONFIGURATION_TYPES=$(_configuration_types) \
 	-DCMAKE_INSTALL_PREFIX=$(abspath $(INSTALL_PREFIX)) \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
-	-DCMAKE_PREFIX_PATH=$(CURDIR)/infra/cmake \
-    -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="./cmake/use-fetch-content.cmake;infra/cmake/bemancmakeinstrumentation.cmake" \
+	-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES="./cmake/use-fetch-content.cmake;infra/cmake/BuildTelemetry.cmake" \
 	$(_cmake_args) \
 	$(CURDIR)
 endef
@@ -74,11 +73,11 @@ compile_commands.json:
 		ln -sf $(_build_path)/compile_commands.json ; \
 	fi
 
-TARGET:=all
+TARGET?=all
 compile: $(_build_path)/CMakeCache.txt
 compile: compile_commands.json
 compile:  ## Compile the project
-	cmake --build $(_build_path)  --config $(CONFIG) --target all -- -k 0
+	cmake --build $(_build_path)  --config $(CONFIG) --target $(TARGET) -- -k 0
 
 compile-headers: $(_build_path)/CMakeCache.txt ## Compile the headers
 	cmake --build $(_build_path)  --config $(CONFIG) --target all_verify_interface_header_sets -- -k 0

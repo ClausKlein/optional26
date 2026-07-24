@@ -1,7 +1,7 @@
 # installtest/CMakeLists.txt                                        -*-CMake-*-
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.27...4.4)
 project(TestInstalledOptional)
 
 set(CMAKE_CXX_STANDARD 20) #current minimum C++ version
