@@ -10,8 +10,8 @@
 int main() {
     {
         // Empty optional example.
-        std::optional<int>             std_empty_opt;
-        beman::optional::optional<int> beman_empty_opt;
+        const std::optional<int>             std_empty_opt;
+        const beman::optional::optional<int> beman_empty_opt;
         assert(!std_empty_opt.has_value() &&
                !beman_empty_opt.has_value()); // or assert(!std_empty_opt && !beman_empty_opt);
         std::cout << "std_vs_beman: .has_value() matches?: "

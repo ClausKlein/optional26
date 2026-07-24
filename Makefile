@@ -1,6 +1,13 @@
 #! /usr/bin/make -f
 # Makefile                                                       -*-makefile-*-
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+# Standard stuff
+
+.SUFFIXES:
+
+MAKEFLAGS+= --no-builtin-rules  # Disable the built-in implicit rules.
+MAKEFLAGS+= --warn-undefined-variables  # Warn when an undefined variable is referenced.
+
 
 INSTALL_PREFIX?=.install/
 BUILD_DIR?=.build
@@ -56,6 +63,7 @@ $(_build_path):
 	mkdir -p $(_build_path)
 
 $(_build_path)/CMakeCache.txt: | $(_build_path) .gitmodules
+	cmake --version
 	cd $(_build_path) && $(run_cmake)
 
 $(_build_path)/compile_commands.json : $(_build_path)/CMakeCache.txt
@@ -113,7 +121,7 @@ papers:
 .DEFAULT: $(_build_path)/CMakeCache.txt ## Other targets passed through to cmake
 	cmake --build $(_build_path)  --config $(CONFIG) --target $@ -- -k 0
 
-PYEXECPATH ?= $(shell which python3.13 || which python3.12 || which python3.11 || which python3.10 || which python3.9 || which python3.8 || which python3)
+PYEXECPATH ?= $(shell which python3.14 || which python3.13 || which python3.12 || which python3.11 || which python3.10 || which python3.9 || which python3.8 || which python3)
 PYTHON ?= $(notdir $(PYEXECPATH))
 VENV := .venv
 ACTIVATE := . $(VENV)/bin/activate &&
